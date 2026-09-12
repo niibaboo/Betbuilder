@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Match IQ</title></head>
 <body style="background:#0b0f14;color:white;font-family:Arial;padding:12px;max-width:600px;margin:auto">
 <h2 style="text-align:center">⚽ MATCH IQ — Full Stats</h2>
-<p style="text-align:center;color:#888;font-size:11px">Powered by TheStatsAPI · 12 Sep 11:29</p>
+<p style="text-align:center;color:#888;font-size:11px">Powered by TheStatsAPI · 12 Sep 16:24</p>
 
 <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin:10px 0 4px">
   <span style="color:#444;font-size:20px">◀</span>
@@ -24,31 +24,65 @@
       style="background:#3a7d7a;border:none;color:white;padding:7px 14px;border-radius:6px;font-size:13px;cursor:pointer">
       Build
     </button>
+    <button onclick="buildSafest()"
+      style="background:#2a3038;border:1px solid #444;color:white;padding:7px 14px;border-radius:6px;font-size:13px;cursor:pointer">
+      🔀 Shuffle
+    </button>
   </div>
   <div id="builderResult" style="font-size:12px;color:#888">
     Set a target odds and a leg cap, then tap Build — rotates through market
     types (goals, BTTS, FH corners, shots, SoT, corners) instead of picking
-    whichever single market is safest, and caps at 2 legs per match to avoid
-    stacking correlated legs from the same game.
+    whichever single market is safest, groups near-tied legs and shuffles
+    within each group so it draws from more of the day's matches rather
+    than always the exact same few, and caps at 2 legs per match to avoid
+    stacking correlated legs from the same game. Tap Shuffle for a fresh
+    pick among equally-safe options without changing your odds/legs settings.
   </div>
 </div>
 <script>
-const LEGS = [{"match": "Go Ahead Eagles v FC Groningen", "market": "Over 2.5 Goals", "prob": 89, "category": "Goals"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "BTTS", "prob": 85, "category": "BTTS"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "FH Corners Over 3.5", "prob": 47, "category": "FH Corners"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "Go Ahead Eagles Over 9.5 Shots", "prob": 87, "category": "Shots"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "Go Ahead Eagles Over 4.5 Shots on Target", "prob": 76, "category": "Shots on Target"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "Go Ahead Eagles Over 3.5 Corners", "prob": 76, "category": "Corners"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "FC Groningen Over 12.0 Shots", "prob": 85, "category": "Shots"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "FC Groningen Over 4.0 Shots on Target", "prob": 69, "category": "Shots on Target"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "FC Groningen Over 3.5 Corners", "prob": 76, "category": "Corners"}, {"match": "TSG Hoffenheim v VfB Stuttgart", "market": "Over 2.5 Goals", "prob": 89, "category": "Goals"}, {"match": "TSG Hoffenheim v VfB Stuttgart", "market": "BTTS", "prob": 85, "category": "BTTS"}, {"match": "TSG Hoffenheim v VfB Stuttgart", "market": "FH Corners Over 3.5", "prob": 76, "category": "FH Corners"}, {"match": "TSG Hoffenheim v VfB Stuttgart", "market": "TSG Hoffenheim Over 11.5 Shots", "prob": 90, "category": "Shots"}, {"match": "TSG Hoffenheim v VfB Stuttgart", "market": "TSG Hoffenheim Over 3.5 Shots on Target", "prob": 73, "category": "Shots on Target"}, {"match": "TSG Hoffenheim v VfB Stuttgart", "market": "TSG Hoffenheim Over 6.0 Corners", "prob": 74, "category": "Corners"}, {"match": "TSG Hoffenheim v VfB Stuttgart", "market": "VfB Stuttgart Over 11.5 Shots", "prob": 90, "category": "Shots"}, {"match": "TSG Hoffenheim v VfB Stuttgart", "market": "VfB Stuttgart Over 4.0 Shots on Target", "prob": 71, "category": "Shots on Target"}, {"match": "TSG Hoffenheim v VfB Stuttgart", "market": "VfB Stuttgart Over 4.5 Corners", "prob": 78, "category": "Corners"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "Over 2.5 Goals", "prob": 84, "category": "Goals"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "BTTS", "prob": 81, "category": "BTTS"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "FH Corners Over 3.5", "prob": 55, "category": "FH Corners"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "1. FC K\u00f6ln Over 12.5 Shots", "prob": 91, "category": "Shots"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "1. FC K\u00f6ln Over 3.5 Shots on Target", "prob": 80, "category": "Shots on Target"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "1. FC K\u00f6ln Over 5.0 Corners", "prob": 70, "category": "Corners"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "SV Werder Bremen Over 7.5 Shots", "prob": 82, "category": "Shots"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "SV Werder Bremen Over 3.5 Shots on Target", "prob": 73, "category": "Shots on Target"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "SV Werder Bremen Over 2.5 Corners", "prob": 68, "category": "Corners"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "Over 2.5 Goals", "prob": 84, "category": "Goals"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "BTTS", "prob": 72, "category": "BTTS"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "FH Corners Over 3.5", "prob": 50, "category": "FH Corners"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "SC Cambuur Over 8.0 Shots", "prob": 83, "category": "Shots"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "SC Cambuur Over 2.5 Shots on Target", "prob": 73, "category": "Shots on Target"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "SC Cambuur Over 2.5 Corners", "prob": 73, "category": "Corners"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "NEC Nijmegen Over 11.0 Shots", "prob": 86, "category": "Shots"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "NEC Nijmegen Over 3.0 Shots on Target", "prob": 67, "category": "Shots on Target"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "NEC Nijmegen Over 3.5 Corners", "prob": 73, "category": "Corners"}, {"match": "SC Freiburg v Borussia M'gladbach", "market": "Over 2.5 Goals", "prob": 79, "category": "Goals"}, {"match": "SC Freiburg v Borussia M'gladbach", "market": "BTTS", "prob": 68, "category": "BTTS"}, {"match": "SC Freiburg v Borussia M'gladbach", "market": "FH Corners Over 3.5", "prob": 80, "category": "FH Corners"}, {"match": "SC Freiburg v Borussia M'gladbach", "market": "SC Freiburg Over 12.5 Shots", "prob": 89, "category": "Shots"}, {"match": "SC Freiburg v Borussia M'gladbach", "market": "SC Freiburg Over 3.5 Shots on Target", "prob": 73, "category": "Shots on Target"}, {"match": "SC Freiburg v Borussia M'gladbach", "market": "SC Freiburg Over 3.5 Corners", "prob": 73, "category": "Corners"}, {"match": "SC Freiburg v Borussia M'gladbach", "market": "Borussia M'gladbach Over 14.0 Shots", "prob": 90, "category": "Shots"}, {"match": "SC Freiburg v Borussia M'gladbach", "market": "Borussia M'gladbach Over 3.5 Shots on Target", "prob": 73, "category": "Shots on Target"}, {"match": "SC Freiburg v Borussia M'gladbach", "market": "Borussia M'gladbach Over 6.5 Corners", "prob": 84, "category": "Corners"}, {"match": "1. FSV Mainz 05 v Eintracht Frankfurt", "market": "Over 2.5 Goals", "prob": 78, "category": "Goals"}, {"match": "1. FSV Mainz 05 v Eintracht Frankfurt", "market": "BTTS", "prob": 66, "category": "BTTS"}, {"match": "1. FSV Mainz 05 v Eintracht Frankfurt", "market": "FH Corners Over 3.5", "prob": 76, "category": "FH Corners"}, {"match": "1. FSV Mainz 05 v Eintracht Frankfurt", "market": "1. FSV Mainz 05 Over 13.5 Shots", "prob": 90, "category": "Shots"}, {"match": "1. FSV Mainz 05 v Eintracht Frankfurt", "market": "1. FSV Mainz 05 Over 4.0 Shots on Target", "prob": 71, "category": "Shots on Target"}, {"match": "1. FSV Mainz 05 v Eintracht Frankfurt", "market": "1. FSV Mainz 05 Over 5.5 Corners", "prob": 81, "category": "Corners"}, {"match": "1. FSV Mainz 05 v Eintracht Frankfurt", "market": "Eintracht Frankfurt Over 12.0 Shots", "prob": 86, "category": "Shots"}, {"match": "1. FSV Mainz 05 v Eintracht Frankfurt", "market": "Eintracht Frankfurt Over 3.5 Shots on Target", "prob": 80, "category": "Shots on Target"}, {"match": "1. FSV Mainz 05 v Eintracht Frankfurt", "market": "Eintracht Frankfurt Over 3.5 Corners", "prob": 80, "category": "Corners"}, {"match": "FC Augsburg v Bayer 04 Leverkusen", "market": "Over 2.5 Goals", "prob": 77, "category": "Goals"}, {"match": "FC Augsburg v Bayer 04 Leverkusen", "market": "BTTS", "prob": 74, "category": "BTTS"}, {"match": "FC Augsburg v Bayer 04 Leverkusen", "market": "FH Corners Over 3.5", "prob": 78, "category": "FH Corners"}, {"match": "FC Augsburg v Bayer 04 Leverkusen", "market": "FC Augsburg Over 14.5 Shots", "prob": 91, "category": "Shots"}, {"match": "FC Augsburg v Bayer 04 Leverkusen", "market": "FC Augsburg Over 7.0 Shots on Target", "prob": 78, "category": "Shots on Target"}, {"match": "FC Augsburg v Bayer 04 Leverkusen", "market": "FC Augsburg Over 5.0 Corners", "prob": 76, "category": "Corners"}, {"match": "FC Augsburg v Bayer 04 Leverkusen", "market": "Bayer 04 Leverkusen Over 15.0 Shots", "prob": 89, "category": "Shots"}, {"match": "FC Augsburg v Bayer 04 Leverkusen", "market": "Bayer 04 Leverkusen Over 5.0 Shots on Target", "prob": 70, "category": "Shots on Target"}, {"match": "FC Augsburg v Bayer 04 Leverkusen", "market": "Bayer 04 Leverkusen Over 5.0 Corners", "prob": 70, "category": "Corners"}, {"match": "Crystal Palace v Ipswich Town", "market": "Over 2.5 Goals", "prob": 75, "category": "Goals"}, {"match": "Crystal Palace v Ipswich Town", "market": "BTTS", "prob": 74, "category": "BTTS"}, {"match": "Crystal Palace v Ipswich Town", "market": "FH Corners Over 3.5", "prob": 52, "category": "FH Corners"}, {"match": "Crystal Palace v Ipswich Town", "market": "Crystal Palace Over 7.0 Shots", "prob": 78, "category": "Shots"}, {"match": "Crystal Palace v Ipswich Town", "market": "Crystal Palace Over 2.0 Shots on Target", "prob": 64, "category": "Shots on Target"}, {"match": "Crystal Palace v Ipswich Town", "market": "Crystal Palace Over 0.5 Corners", "prob": 63, "category": "Corners"}, {"match": "Crystal Palace v Ipswich Town", "market": "Ipswich Town Over 7.5 Shots", "prob": 86, "category": "Shots"}, {"match": "Crystal Palace v Ipswich Town", "market": "Ipswich Town Over 3.0 Shots on Target", "prob": 62, "category": "Shots on Target"}, {"match": "Crystal Palace v Ipswich Town", "market": "Ipswich Town Over 2.5 Corners", "prob": 71, "category": "Corners"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "Over 2.5 Goals", "prob": 71, "category": "Goals"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "BTTS", "prob": 70, "category": "BTTS"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "FH Corners Over 3.5", "prob": 49, "category": "FH Corners"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "Fortuna Sittard Over 6.5 Shots", "prob": 81, "category": "Shots"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "Fortuna Sittard Over 3.5 Shots on Target", "prob": 73, "category": "Shots on Target"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "Fortuna Sittard Over 1.0 Corners", "prob": 54, "category": "Corners"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "AFC Ajax Over 14.0 Shots", "prob": 90, "category": "Shots"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "AFC Ajax Over 4.0 Shots on Target", "prob": 74, "category": "Shots on Target"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "AFC Ajax Over 3.5 Corners", "prob": 80, "category": "Corners"}, {"match": "Liverpool v Fulham", "market": "Over 2.5 Goals", "prob": 69, "category": "Goals"}, {"match": "Liverpool v Fulham", "market": "BTTS", "prob": 66, "category": "BTTS"}, {"match": "Liverpool v Fulham", "market": "FH Corners Over 3.5", "prob": 71, "category": "FH Corners"}, {"match": "Liverpool v Fulham", "market": "Liverpool Over 12.0 Shots", "prob": 85, "category": "Shots"}, {"match": "Liverpool v Fulham", "market": "Liverpool Over 4.0 Shots on Target", "prob": 71, "category": "Shots on Target"}, {"match": "Liverpool v Fulham", "market": "Liverpool Over 2.5 Corners", "prob": 76, "category": "Corners"}, {"match": "Liverpool v Fulham", "market": "Fulham Over 12.0 Shots", "prob": 85, "category": "Shots"}, {"match": "Liverpool v Fulham", "market": "Fulham Over 2.5 Shots on Target", "prob": 76, "category": "Shots on Target"}, {"match": "Liverpool v Fulham", "market": "Fulham Over 4.0 Corners", "prob": 67, "category": "Corners"}, {"match": "FC Twente v ADO Den Haag", "market": "Over 2.5 Goals", "prob": 68, "category": "Goals"}, {"match": "FC Twente v ADO Den Haag", "market": "BTTS", "prob": 59, "category": "BTTS"}, {"match": "FC Twente v ADO Den Haag", "market": "FH Corners Over 3.5", "prob": 74, "category": "FH Corners"}, {"match": "FC Twente v ADO Den Haag", "market": "FC Twente Over 15.0 Shots", "prob": 90, "category": "Shots"}, {"match": "FC Twente v ADO Den Haag", "market": "FC Twente Over 5.0 Shots on Target", "prob": 72, "category": "Shots on Target"}, {"match": "FC Twente v ADO Den Haag", "market": "FC Twente Over 4.5 Corners", "prob": 81, "category": "Corners"}, {"match": "FC Twente v ADO Den Haag", "market": "ADO Den Haag Over 7.5 Shots", "prob": 86, "category": "Shots"}, {"match": "FC Twente v ADO Den Haag", "market": "ADO Den Haag Over 2.0 Shots on Target", "prob": 53, "category": "Shots on Target"}, {"match": "FC Twente v ADO Den Haag", "market": "ADO Den Haag Over 2.5 Corners", "prob": 76, "category": "Corners"}];
+const LEGS = [{"match": "Go Ahead Eagles v FC Groningen", "market": "Over 2.5 Goals", "prob": 89, "category": "Goals"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "BTTS", "prob": 86, "category": "BTTS"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "FH Corners Over 3.5", "prob": 46, "category": "FH Corners"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "Go Ahead Eagles Over 9.5 Shots", "prob": 87, "category": "Shots"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "Go Ahead Eagles Over 4.5 Shots on Target", "prob": 76, "category": "Shots on Target"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "Go Ahead Eagles Over 3.5 Corners", "prob": 76, "category": "Corners"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "FC Groningen Over 12.0 Shots", "prob": 85, "category": "Shots"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "FC Groningen Over 4.0 Shots on Target", "prob": 69, "category": "Shots on Target"}, {"match": "Go Ahead Eagles v FC Groningen", "market": "FC Groningen Over 3.5 Corners", "prob": 76, "category": "Corners"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "Over 2.5 Goals", "prob": 84, "category": "Goals"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "BTTS", "prob": 72, "category": "BTTS"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "FH Corners Over 3.5", "prob": 50, "category": "FH Corners"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "SC Cambuur Over 8.0 Shots", "prob": 83, "category": "Shots"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "SC Cambuur Over 2.5 Shots on Target", "prob": 73, "category": "Shots on Target"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "SC Cambuur Over 2.5 Corners", "prob": 73, "category": "Corners"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "NEC Nijmegen Over 11.0 Shots", "prob": 86, "category": "Shots"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "NEC Nijmegen Over 3.0 Shots on Target", "prob": 67, "category": "Shots on Target"}, {"match": "SC Cambuur v NEC Nijmegen", "market": "NEC Nijmegen Over 3.5 Corners", "prob": 73, "category": "Corners"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "Over 2.5 Goals", "prob": 83, "category": "Goals"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "BTTS", "prob": 80, "category": "BTTS"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "FH Corners Over 3.5", "prob": 55, "category": "FH Corners"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "1. FC K\u00f6ln Over 12.5 Shots", "prob": 91, "category": "Shots"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "1. FC K\u00f6ln Over 3.5 Shots on Target", "prob": 80, "category": "Shots on Target"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "1. FC K\u00f6ln Over 5.0 Corners", "prob": 70, "category": "Corners"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "SV Werder Bremen Over 7.5 Shots", "prob": 82, "category": "Shots"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "SV Werder Bremen Over 3.5 Shots on Target", "prob": 73, "category": "Shots on Target"}, {"match": "1. FC K\u00f6ln v SV Werder Bremen", "market": "SV Werder Bremen Over 2.5 Corners", "prob": 68, "category": "Corners"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "Over 2.5 Goals", "prob": 71, "category": "Goals"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "BTTS", "prob": 70, "category": "BTTS"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "FH Corners Over 3.5", "prob": 48, "category": "FH Corners"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "Fortuna Sittard Over 6.5 Shots", "prob": 81, "category": "Shots"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "Fortuna Sittard Over 3.5 Shots on Target", "prob": 73, "category": "Shots on Target"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "Fortuna Sittard Over 1.0 Corners", "prob": 54, "category": "Corners"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "AFC Ajax Over 14.0 Shots", "prob": 90, "category": "Shots"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "AFC Ajax Over 4.0 Shots on Target", "prob": 74, "category": "Shots on Target"}, {"match": "Fortuna Sittard v AFC Ajax", "market": "AFC Ajax Over 3.5 Corners", "prob": 80, "category": "Corners"}];
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Sorts safest-first at a coarse level (5-point probability bands) but
+// shuffles legs WITHIN each band, so e.g. five different legs all sitting
+// at 84-88% get picked in a different order each time instead of always
+// the same one — this is what actually lets the builder draw from the
+// full pool of matches instead of fixating on whichever leg happens to
+// be a fraction of a percent ahead.
+function tieredShuffle(legs, bandSize) {
+  const bands = {};
+  legs.forEach(l => {
+    const band = Math.floor(l.prob / bandSize);
+    (bands[band] = bands[band] || []).push(l);
+  });
+  const bandKeys = Object.keys(bands).map(Number).sort((a, b) => b - a);
+  let result = [];
+  bandKeys.forEach(b => { result = result.concat(shuffle(bands[b])); });
+  return result;
+}
 
 function buildSafest() {
   const target = parseFloat(document.getElementById('targetOdds').value) || 5.0;
   const maxLegs = parseInt(document.getElementById('maxLegs').value) || 8;
 
-  // Group legs by category, each sorted safest-first, so the builder can
+  // Group legs by category, tiered-shuffled within each, so the builder can
   // round-robin across market types instead of exhausting one category
   // (usually Shots, since it tends to have the highest raw probabilities)
-  // before touching any other.
+  // before touching any other — and so it doesn't fixate on the same
+  // handful of matches every time when many legs are near-equally safe.
   const byCategory = {};
   LEGS.filter(l => l.prob > 0).forEach(l => {
     (byCategory[l.category] = byCategory[l.category] || []).push(l);
   });
   const categories = Object.keys(byCategory);
-  categories.forEach(c => byCategory[c].sort((a, b) => b.prob - a.prob));
+  categories.forEach(c => { byCategory[c] = tieredShuffle(byCategory[c], 5); });
   const cursor = {};
   categories.forEach(c => cursor[c] = 0);
 
@@ -113,9 +147,9 @@ function buildSafest() {
   <div style="font-size:11px;color:#999">Eredivisie · 2026-09-12 16:45</div>
   <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">Go Ahead Eagles vs FC Groningen</div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">5.21</div></div>
+    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">5.23</div></div>
     <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">89%</div></div>
-    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">85%</div></div>
+    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">86%</div></div>
   </div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
     <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">48%</div></div>
@@ -123,63 +157,19 @@ function buildSafest() {
     <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">34%</div></div>
   </div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">3.53</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">47%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">28%</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">3.49</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">46%</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">27%</div></div>
   </div>
   <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
     <div>Go Ahead Eagles: 2.8 goals/gm · shots 13.6 · SoT 6.4 · corners 5.2 (FH 1.2) · tackles 10.8 · saves 2.6 (5gm)</div>
     <div style="margin-top:4px">FC Groningen: 2.2 goals/gm · shots 16.8 · SoT 5.8 · corners 5.2 (FH 1.6) · tackles 12.2 · saves 4.2 (5gm)</div>
   </div>
 </div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
-  <div style="font-size:11px;color:#999">Bundesliga · 2026-09-12 13:30</div>
-  <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">TSG Hoffenheim vs VfB Stuttgart</div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">5.12</div></div>
-    <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">89%</div></div>
-    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">85%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">37%</div></div>
-    <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">18%</div></div>
-    <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">45%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">5.16</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">76%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">59%</div></div>
-  </div>
-  <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
-    <div>TSG Hoffenheim: 2.0 goals/gm · shots 16.5 · SoT 5.0 · corners 8.5 (FH 2.0) · tackles 16.0 · saves 2.5 (2gm)</div>
-    <div style="margin-top:4px">VfB Stuttgart: 2.5 goals/gm · shots 16.5 · SoT 6.0 · corners 6.5 (FH 3.5) · tackles 15.5 · saves 4.0 (2gm)</div>
-  </div>
-</div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
-  <div style="font-size:11px;color:#999">Bundesliga · 2026-09-12 16:30</div>
-  <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">1. FC Köln vs SV Werder Bremen</div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">4.67</div></div>
-    <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">84%</div></div>
-    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">81%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">37%</div></div>
-    <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">19%</div></div>
-    <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">44%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">3.9</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">55%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">35%</div></div>
-  </div>
-  <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
-    <div>1. FC Köln: 2.0 goals/gm · shots 18.0 · SoT 5.5 · corners 7.0 (FH 2.5) · tackles 13.0 · saves 3.0 (2gm)</div>
-    <div style="margin-top:4px">SV Werder Bremen: 2.0 goals/gm · shots 10.5 · SoT 5.0 · corners 3.5 (FH 0.0) · tackles 33.0 · saves 2.0 (2gm)</div>
-  </div>
-</div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
   <div style="font-size:11px;color:#999">Eredivisie · 2026-09-12 19:00</div>
   <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">SC Cambuur vs NEC Nijmegen</div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">4.59</div></div>
+    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">4.62</div></div>
     <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">84%</div></div>
     <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">72%</div></div>
   </div>
@@ -189,7 +179,7 @@ function buildSafest() {
     <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">72%</div></div>
   </div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">3.69</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">3.66</div></div>
     <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">50%</div></div>
     <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">31%</div></div>
   </div>
@@ -198,158 +188,48 @@ function buildSafest() {
     <div style="margin-top:4px">NEC Nijmegen: 2.2 goals/gm · shots 15.8 · SoT 4.6 · corners 5.0 (FH 2.0) · tackles 16.0 · saves 1.6 (5gm)</div>
   </div>
 </div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
-  <div style="font-size:11px;color:#999">Bundesliga · 2026-09-12 13:30</div>
-  <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">SC Freiburg vs Borussia M'gladbach</div>
+  <div style="font-size:11px;color:#999">Bundesliga · 2026-09-12 16:30</div>
+  <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">1. FC Köln vs SV Werder Bremen</div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">4.18</div></div>
-    <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">79%</div></div>
-    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">68%</div></div>
+    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">4.52</div></div>
+    <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">83%</div></div>
+    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">80%</div></div>
   </div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">71%</div></div>
-    <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">15%</div></div>
-    <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">14%</div></div>
+    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">36%</div></div>
+    <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">19%</div></div>
+    <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">44%</div></div>
   </div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">5.52</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">80%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">65%</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">3.92</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">55%</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">36%</div></div>
   </div>
   <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
-    <div>SC Freiburg: 2.5 goals/gm · shots 17.5 · SoT 5.0 · corners 5.0 (FH 3.5) · tackles 13.5 · saves 2.5 (2gm)</div>
-    <div style="margin-top:4px">Borussia M'gladbach: 1.5 goals/gm · shots 20.0 · SoT 5.0 · corners 9.5 (FH 3.0) · tackles 20.5 · saves 7.0 (2gm)</div>
-  </div>
-</div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
-  <div style="font-size:11px;color:#999">Bundesliga · 2026-09-12 13:30</div>
-  <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">1. FSV Mainz 05 vs Eintracht Frankfurt</div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">4.11</div></div>
-    <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">78%</div></div>
-    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">66%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">72%</div></div>
-    <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">15%</div></div>
-    <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">13%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">5.18</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">76%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">59%</div></div>
-  </div>
-  <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
-    <div>1. FSV Mainz 05: 2.5 goals/gm · shots 19.0 · SoT 6.0 · corners 8.0 (FH 3.0) · tackles 14.0 · saves 0.5 (2gm)</div>
-    <div style="margin-top:4px">Eintracht Frankfurt: 2.0 goals/gm · shots 17.0 · SoT 5.5 · corners 5.5 (FH 2.5) · tackles 12.5 · saves 6.0 (2gm)</div>
-  </div>
-</div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
-  <div style="font-size:11px;color:#999">Bundesliga · 2026-09-12 13:30</div>
-  <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">FC Augsburg vs Bayer 04 Leverkusen</div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">4.05</div></div>
-    <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">77%</div></div>
-    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">74%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">53%</div></div>
-    <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">20%</div></div>
-    <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">28%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">5.36</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">78%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">62%</div></div>
-  </div>
-  <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
-    <div>FC Augsburg: 3.5 goals/gm · shots 20.5 · SoT 10.0 · corners 7.5 (FH 3.0) · tackles 18.0 · saves 5.5 (2gm)</div>
-    <div style="margin-top:4px">Bayer 04 Leverkusen: 3.0 goals/gm · shots 21.0 · SoT 7.0 · corners 7.0 (FH 3.0) · tackles 11.5 · saves 1.5 (2gm)</div>
-  </div>
-</div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
-  <div style="font-size:11px;color:#999">Premier League · 2026-09-12 14:00</div>
-  <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">Crystal Palace vs Ipswich Town</div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">3.95</div></div>
-    <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">75%</div></div>
-    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">74%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">40%</div></div>
-    <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">21%</div></div>
-    <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">40%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">3.75</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">52%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">32%</div></div>
-  </div>
-  <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
-    <div>Crystal Palace: 1.33 goals/gm · shots 10.0 · SoT 3.3 · corners 1.0 (FH 1.0) · tackles 25.7 · saves 4.0 (3gm)</div>
-    <div style="margin-top:4px">Ipswich Town: 1.33 goals/gm · shots 11.0 · SoT 4.3 · corners 3.7 (FH 1.7) · tackles 16.7 · saves 4.3 (3gm)</div>
+    <div>1. FC Köln: 2.0 goals/gm · shots 18.0 · SoT 5.5 · corners 7.0 (FH 2.5) · tackles 13.0 · saves 3.0 (2gm)</div>
+    <div style="margin-top:4px">SV Werder Bremen: 2.0 goals/gm · shots 10.5 · SoT 5.0 · corners 3.5 (FH 0.0) · tackles 33.0 · saves 2.0 (2gm)</div>
   </div>
 </div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
   <div style="font-size:11px;color:#999">Eredivisie · 2026-09-12 18:00</div>
   <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">Fortuna Sittard vs AFC Ajax</div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">3.68</div></div>
+    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">3.69</div></div>
     <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">71%</div></div>
     <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">70%</div></div>
   </div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">33%</div></div>
+    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">32%</div></div>
     <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">21%</div></div>
     <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">46%</div></div>
   </div>
   <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">3.61</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">49%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">30%</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">3.57</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">48%</div></div>
+    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">29%</div></div>
   </div>
   <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
     <div>Fortuna Sittard: 2.2 goals/gm · shots 9.2 · SoT 5.0 · corners 1.8 (FH 0.4) · tackles 10.6 · saves 4.2 (5gm)</div>
     <div style="margin-top:4px">AFC Ajax: 2.25 goals/gm · shots 20.0 · SoT 6.2 · corners 5.5 (FH 2.5) · tackles 16.2 · saves 3.8 (4gm)</div>
-  </div>
-</div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
-  <div style="font-size:11px;color:#999">Premier League · 2026-09-12 14:00</div>
-  <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">Liverpool vs Fulham</div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">3.58</div></div>
-    <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">69%</div></div>
-    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">66%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">59%</div></div>
-    <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">20%</div></div>
-    <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">22%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">4.86</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">71%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">53%</div></div>
-  </div>
-  <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
-    <div>Liverpool: 2.0 goals/gm · shots 16.7 · SoT 6.0 · corners 4.0 (FH 2.7) · tackles 17.7 · saves 3.0 (3gm)</div>
-    <div style="margin-top:4px">Fulham: 1.33 goals/gm · shots 16.7 · SoT 4.0 · corners 5.7 (FH 2.3) · tackles 13.7 · saves 2.7 (3gm)</div>
-  </div>
-</div><div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
-  <div style="font-size:11px;color:#999">Eredivisie · 2026-09-12 14:30</div>
-  <div style="font-size:17px;font-weight:bold;margin:6px 0 10px">FC Twente vs ADO Den Haag</div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">EXP TOTAL</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">3.52</div></div>
-    <div><div style="color:#aaa;font-size:11px">OVER 2.5</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">68%</div></div>
-    <div><div style="color:#aaa;font-size:11px">BTTS</div><div style="color:#ffeb3b;font-size:20px;font-weight:bold">59%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">HOME WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">69%</div></div>
-    <div><div style="color:#aaa;font-size:11px">DRAW</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">17%</div></div>
-    <div><div style="color:#aaa;font-size:11px">AWAY WIN</div><div style="color:#a0e8a0;font-size:18px;font-weight:bold">13%</div></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;text-align:center;margin-bottom:10px">
-    <div><div style="color:#aaa;font-size:11px">FH CORNERS EXP</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">5.04</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 3.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">74%</div></div>
-    <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">57%</div></div>
-  </div>
-  <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
-    <div>FC Twente: 2.0 goals/gm · shots 21.2 · SoT 7.2 · corners 6.8 (FH 3.0) · tackles 12.6 · saves 2.2 (5gm)</div>
-    <div style="margin-top:4px">ADO Den Haag: 1.2 goals/gm · shots 11.0 · SoT 2.8 · corners 4.0 (FH 2.2) · tackles 21.0 · saves 5.2 (5gm)</div>
   </div>
 </div>
 </body></html>
