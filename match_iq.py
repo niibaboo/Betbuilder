@@ -50,7 +50,7 @@ LEAGUE_SEARCH_NAMES = [
     "Eredivisie",
     "Primeira Liga",
     "La Liga",
-    "Ligue 1",
+    # "Ligue 1",  # de-listed — found unreliable
     "UEFA Champions League",
     "MLS",
 ]
@@ -176,6 +176,8 @@ def get_team_form(team_id, competition_id, season_id, key):
     scored, conceded = [], []
     shots, shots_on_target, corners, saves = [], [], [], []
     fh_corners, tackles = [], []
+    cards = []  # yellow + red combined, per match — field names unverified against
+                # a real API response, same caveat as the other stats below
 
     for m in matches:
         is_home = m["home_team"]["id"] == team_id
@@ -207,6 +209,11 @@ def get_team_form(team_id, competition_id, season_id, key):
         if fh_v is not None:
             fh_corners.append(fh_v)
 
+        yellow = side_val("yellow_cards")
+        red = side_val("red_cards")
+        if yellow is not None or red is not None:
+            cards.append((yellow or 0) + (red or 0))
+
     if not scored:
         team_form_cache[cache_key] = None
         return None
@@ -223,6 +230,7 @@ def get_team_form(team_id, competition_id, season_id, key):
         "avg_saves": round(sum(saves) / len(saves), 1) if saves else None,
         "avg_fh_corners": round(sum(fh_corners) / len(fh_corners), 1) if fh_corners else None,
         "avg_tackles": round(sum(tackles) / len(tackles), 1) if tackles else None,
+        "avg_cards": round(sum(cards) / len(cards), 1) if cards else None,
     }
     team_form_cache[cache_key] = form
     return form
@@ -327,11 +335,24 @@ def predict_fh_corners(h_form, a_form):
 
 
 def predict_team_props(form):
-    """Poisson-priced shots / shots-on-target / corners probabilities for
-    one team, using a line set below their recent-form average so the leg
-    carries a real safety margin — the same "wide cushion" reasoning used
-    manually when picking bet-builder legs (average well above the line),
-    just turned into an actual probability instead of a by-eye judgment."""
+    """Poisson-priced shots / shots-on-target / corners / cards
+    probabilities for one team.
+
+    Shots/SoT/corners use a line set to 72% of the recent-form average,
+    rounded down to the nearest 0.5 — a real safety margin below a
+    double-digit average (the same "wide cushion" reasoning used
+    manually when picking bet-builder legs), turned into an actual
+    probability instead of a by-eye judgment.
+
+    Cards get a DIFFERENT, fixed line — "Over 0.5" (i.e. at least one
+    booking) — rather than the same 72%-of-average approach. Cards
+    averages are low (typically 1-3 per team), so scaling down by 72%
+    and rounding to the nearest 0.5 was landing on lines like "Over 1.0"
+    (needing 2+ cards), which is a meaningfully harder — and much less
+    safe — bet than the natural "team gets booked at least once" market
+    most bet builders actually offer. At low counts the generic
+    safety-margin logic doesn't transfer; a fixed low bar suits this
+    market better."""
     def prop(avg, factor=0.72):
         if avg is None:
             return None
@@ -343,10 +364,17 @@ def predict_team_props(form):
         prob = 1 - poisson_cdf(threshold - 1, avg)
         return {"line": line, "prob": round(prob * 100)}
 
+    def at_least_one(avg):
+        if avg is None:
+            return None
+        prob = 1 - poisson_pmf(0, avg)
+        return {"line": 0.5, "prob": round(prob * 100)}
+
     return {
         "shots_prop": prop(form.get("avg_shots")),
         "sot_prop": prop(form.get("avg_shots_on_target")),
         "corners_prop": prop(form.get("avg_corners")),
+        "cards_prop": at_least_one(form.get("avg_cards")),
     }
 
 
@@ -373,7 +401,7 @@ def build_legs(predictions):
             ("away", p["away_team"], p.get("away_props") or {}),
         ]:
             for market_key, label in [("shots_prop", "Shots"), ("sot_prop", "Shots on Target"),
-                                        ("corners_prop", "Corners")]:
+                                        ("corners_prop", "Corners"), ("cards_prop", "Cards")]:
                 prop = props.get(market_key)
                 if prop:
                     legs.append({
@@ -466,6 +494,7 @@ def format_date_label(date_key):
 BUILDER_TEMPLATE = """
 <div style="background:#1a1f26;border-radius:12px;padding:16px;margin:12px 0;border:1px solid #2a3038">
   <div style="font-size:14px;font-weight:bold;margin-bottom:10px">🎯 Safest Bet Builder</div>
+  <div id="categoryToggles" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:12px"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap">
     <label style="font-size:12px;color:#aaa">Target odds:</label>
     <input id="targetOdds" type="number" step="0.1" min="1.1" value="5.0"
@@ -483,17 +512,30 @@ BUILDER_TEMPLATE = """
     </button>
   </div>
   <div id="builderResult" style="font-size:12px;color:#888">
-    Set a target odds and a leg cap, then tap Build — rotates through market
-    types (goals, BTTS, FH corners, shots, SoT, corners) instead of picking
-    whichever single market is safest, groups near-tied legs and shuffles
-    within each group so it draws from more of the day's matches rather
-    than always the exact same few, and caps at 2 legs per match to avoid
-    stacking correlated legs from the same game. Tap Shuffle for a fresh
-    pick among equally-safe options without changing your odds/legs settings.
+    Untick any market type you don't want considered (Corners starts unticked —
+    lower counts mean more relative variance than shots/SoT), set a target odds
+    and leg cap, then tap Build. It rotates through whichever categories are
+    ticked, groups near-tied legs and shuffles within each group so it draws
+    from more of the day's matches rather than always the exact same few, and
+    caps at 2 legs per match to avoid stacking correlated legs from one game.
+    Tap Shuffle for a fresh pick among equally-safe options without changing
+    your settings.
   </div>
 </div>
 <script>
 const LEGS = {legs_json};
+
+function initCategoryToggles() {{
+  const container = document.getElementById('categoryToggles');
+  const cats = [...new Set(LEGS.map(l => l.category))];
+  container.innerHTML = cats.map(c => `
+    <label style="display:flex;align-items:center;gap:4px;color:#ccc;cursor:pointer">
+      <input type="checkbox" class="catToggle" value="${{c}}" ${{c === 'Corners' ? '' : 'checked'}}>
+      ${{c}}
+    </label>
+  `).join('');
+}}
+initCategoryToggles();
 
 function shuffle(arr) {{
   for (let i = arr.length - 1; i > 0; i--) {{
@@ -524,6 +566,7 @@ function tieredShuffle(legs, bandSize) {{
 function buildSafest() {{
   const target = parseFloat(document.getElementById('targetOdds').value) || 5.0;
   const maxLegs = parseInt(document.getElementById('maxLegs').value) || 8;
+  const activeCats = [...document.querySelectorAll('.catToggle:checked')].map(el => el.value);
 
   // Group legs by category, tiered-shuffled within each, so the builder can
   // round-robin across market types instead of exhausting one category
@@ -531,7 +574,7 @@ function buildSafest() {{
   // before touching any other — and so it doesn't fixate on the same
   // handful of matches every time when many legs are near-equally safe.
   const byCategory = {{}};
-  LEGS.filter(l => l.prob > 0).forEach(l => {{
+  LEGS.filter(l => l.prob > 0 && activeCats.includes(l.category)).forEach(l => {{
     (byCategory[l.category] = byCategory[l.category] || []).push(l);
   }});
   const categories = Object.keys(byCategory);
@@ -628,8 +671,8 @@ CARD_TEMPLATE = """<div style="background:#1a1f26;border-radius:12px;padding:16p
     <div><div style="color:#aaa;font-size:11px">FH OVER 4.5</div><div style="color:#7ec8ff;font-size:18px;font-weight:bold">{fh_corners_over45}%</div></div>
   </div>
   <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:11px">
-    <div>{home_team}: {h_goals} goals/gm · shots {h_shots} · SoT {h_sot} · corners {h_corners} (FH {h_fh_corners}) · tackles {h_tackles} · saves {h_saves} ({h_n}gm)</div>
-    <div style="margin-top:4px">{away_team}: {a_goals} goals/gm · shots {a_shots} · SoT {a_sot} · corners {a_corners} (FH {a_fh_corners}) · tackles {a_tackles} · saves {a_saves} ({a_n}gm)</div>
+    <div>{home_team}: {h_goals} goals/gm · shots {h_shots} · SoT {h_sot} · corners {h_corners} (FH {h_fh_corners}) · tackles {h_tackles} · saves {h_saves} · cards {h_cards} ({h_n}gm)</div>
+    <div style="margin-top:4px">{away_team}: {a_goals} goals/gm · shots {a_shots} · SoT {a_sot} · corners {a_corners} (FH {a_fh_corners}) · tackles {a_tackles} · saves {a_saves} · cards {a_cards} ({a_n}gm)</div>
   </div>
 </div>"""
 
@@ -649,11 +692,11 @@ def make_html(predictions, date_label=None, prev_href=None, next_href=None):
         h_goals=p["home_form"]["avg_scored"], h_shots=fmt(p["home_form"]["avg_shots"]),
         h_sot=fmt(p["home_form"]["avg_shots_on_target"]), h_corners=fmt(p["home_form"]["avg_corners"]),
         h_fh_corners=fmt(p["home_form"]["avg_fh_corners"]), h_tackles=fmt(p["home_form"]["avg_tackles"]),
-        h_saves=fmt(p["home_form"]["avg_saves"]), h_n=p["home_form"]["n_games"],
+        h_saves=fmt(p["home_form"]["avg_saves"]), h_cards=fmt(p["home_form"].get("avg_cards")), h_n=p["home_form"]["n_games"],
         a_goals=p["away_form"]["avg_scored"], a_shots=fmt(p["away_form"]["avg_shots"]),
         a_sot=fmt(p["away_form"]["avg_shots_on_target"]), a_corners=fmt(p["away_form"]["avg_corners"]),
         a_fh_corners=fmt(p["away_form"]["avg_fh_corners"]), a_tackles=fmt(p["away_form"]["avg_tackles"]),
-        a_saves=fmt(p["away_form"]["avg_saves"]), a_n=p["away_form"]["n_games"],
+        a_saves=fmt(p["away_form"]["avg_saves"]), a_cards=fmt(p["away_form"].get("avg_cards")), a_n=p["away_form"]["n_games"],
     ) for p in predictions)
     if not cards:
         cards = '<p style="text-align:center;color:#888">No fixtures on this date passed the filter.</p>'
@@ -684,9 +727,9 @@ def write_csv(predictions, path):
             "HomeWinPct", "DrawPct", "AwayWinPct",
             "ExpFHCorners", "FHCornersOver35", "FHCornersOver45",
             "HomeGoalsAvg", "HomeShotsAvg", "HomeSoTAvg", "HomeCornersAvg", "HomeFHCornersAvg",
-            "HomeTacklesAvg", "HomeSavesAvg", "HomeSample",
+            "HomeTacklesAvg", "HomeSavesAvg", "HomeCardsAvg", "HomeSample",
             "AwayGoalsAvg", "AwayShotsAvg", "AwaySoTAvg", "AwayCornersAvg", "AwayFHCornersAvg",
-            "AwayTacklesAvg", "AwaySavesAvg", "AwaySample",
+            "AwayTacklesAvg", "AwaySavesAvg", "AwayCardsAvg", "AwaySample",
             "ActualHomeGoals", "ActualAwayGoals", "ActualFHCorners", "Actual1X2", "HitOrMiss",
         ])
         for p in predictions:
@@ -698,10 +741,10 @@ def write_csv(predictions, path):
                 p["exp_fh_corners"], p["fh_corners_over35"], p["fh_corners_over45"],
                 hf["avg_scored"], fmt(hf["avg_shots"]), fmt(hf["avg_shots_on_target"]),
                 fmt(hf["avg_corners"]), fmt(hf["avg_fh_corners"]), fmt(hf["avg_tackles"]),
-                fmt(hf["avg_saves"]), hf["n_games"],
+                fmt(hf["avg_saves"]), fmt(hf.get("avg_cards")), hf["n_games"],
                 af["avg_scored"], fmt(af["avg_shots"]), fmt(af["avg_shots_on_target"]),
                 fmt(af["avg_corners"]), fmt(af["avg_fh_corners"]), fmt(af["avg_tackles"]),
-                fmt(af["avg_saves"]), af["n_games"],
+                fmt(af["avg_saves"]), fmt(af.get("avg_cards")), af["n_games"],
                 "", "", "", "", "",
             ])
 
