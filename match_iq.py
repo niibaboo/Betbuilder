@@ -477,31 +477,65 @@ BUILDER_TEMPLATE = """
       style="background:#3a7d7a;border:none;color:white;padding:7px 14px;border-radius:6px;font-size:13px;cursor:pointer">
       Build
     </button>
+    <button onclick="buildSafest()"
+      style="background:#2a3038;border:1px solid #444;color:white;padding:7px 14px;border-radius:6px;font-size:13px;cursor:pointer">
+      🔀 Shuffle
+    </button>
   </div>
   <div id="builderResult" style="font-size:12px;color:#888">
     Set a target odds and a leg cap, then tap Build — rotates through market
     types (goals, BTTS, FH corners, shots, SoT, corners) instead of picking
-    whichever single market is safest, and caps at 2 legs per match to avoid
-    stacking correlated legs from the same game.
+    whichever single market is safest, groups near-tied legs and shuffles
+    within each group so it draws from more of the day's matches rather
+    than always the exact same few, and caps at 2 legs per match to avoid
+    stacking correlated legs from the same game. Tap Shuffle for a fresh
+    pick among equally-safe options without changing your odds/legs settings.
   </div>
 </div>
 <script>
 const LEGS = {legs_json};
 
+function shuffle(arr) {{
+  for (let i = arr.length - 1; i > 0; i--) {{
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }}
+  return arr;
+}}
+
+// Sorts safest-first at a coarse level (5-point probability bands) but
+// shuffles legs WITHIN each band, so e.g. five different legs all sitting
+// at 84-88% get picked in a different order each time instead of always
+// the same one — this is what actually lets the builder draw from the
+// full pool of matches instead of fixating on whichever leg happens to
+// be a fraction of a percent ahead.
+function tieredShuffle(legs, bandSize) {{
+  const bands = {{}};
+  legs.forEach(l => {{
+    const band = Math.floor(l.prob / bandSize);
+    (bands[band] = bands[band] || []).push(l);
+  }});
+  const bandKeys = Object.keys(bands).map(Number).sort((a, b) => b - a);
+  let result = [];
+  bandKeys.forEach(b => {{ result = result.concat(shuffle(bands[b])); }});
+  return result;
+}}
+
 function buildSafest() {{
   const target = parseFloat(document.getElementById('targetOdds').value) || 5.0;
   const maxLegs = parseInt(document.getElementById('maxLegs').value) || 8;
 
-  // Group legs by category, each sorted safest-first, so the builder can
+  // Group legs by category, tiered-shuffled within each, so the builder can
   // round-robin across market types instead of exhausting one category
   // (usually Shots, since it tends to have the highest raw probabilities)
-  // before touching any other.
+  // before touching any other — and so it doesn't fixate on the same
+  // handful of matches every time when many legs are near-equally safe.
   const byCategory = {{}};
   LEGS.filter(l => l.prob > 0).forEach(l => {{
     (byCategory[l.category] = byCategory[l.category] || []).push(l);
   }});
   const categories = Object.keys(byCategory);
-  categories.forEach(c => byCategory[c].sort((a, b) => b.prob - a.prob));
+  categories.forEach(c => {{ byCategory[c] = tieredShuffle(byCategory[c], 5); }});
   const cursor = {{}};
   categories.forEach(c => cursor[c] = 0);
 
