@@ -7,14 +7,17 @@ one adds real shots / shots-on-target / corners / goalkeeper-saves data,
 which football-data.org doesn't expose at any free tier.
 
 IMPORTANT — API call budget:
-Getting shots/SoT/corners/saves for a team's last 5 games requires ONE
-extra call per game (the /stats endpoint isn't included in the base
-match object), so each team costs ~6 calls (1 to list recent matches +
-5 for their stats) on top of the per-league calls. Trial accounts are
-metered at 10% of the Starter plan's limits — with 7 leagues × ~20
-teams each, a full run could easily need 800+ calls, which is very
-likely to exceed a trial's budget. START WITH 1-2 LEAGUES (see LEAGUES
-below) to confirm this works before scaling up.
+Getting shots/SoT/corners/saves for a team's last N games (RECENT_GAMES
+below, currently 7) requires ONE extra call per game (the /stats
+endpoint isn't included in the base match object), so each team costs
+~8 calls (1 to list recent matches + 7 for their stats) on top of the
+per-league calls. Trial accounts are metered at 10% of the Starter
+plan's limits — with 7 leagues × ~20 teams each, a full run could
+easily need 1,100+ calls, which is very likely to exceed a trial's
+budget. START WITH 1-2 LEAGUES (see LEAGUES below) to confirm this
+works before scaling up. Raising RECENT_GAMES further scales this
+cost linearly — each extra game per team is ~20 extra calls per
+league (1 per team) across a full run.
 
 Setup:
     pip3 install requests --break-system-packages
@@ -34,7 +37,7 @@ from datetime import datetime, timedelta, timezone
 import requests
 
 BASE = "https://api.thestatsapi.com/api"
-RECENT_GAMES = 5
+RECENT_GAMES = 7
 PRIOR_STRENGTH = 3
 MIN_OVER25_PCT = 65  # only keep fixtures with Over 2.5 probability above this...
 MIN_BTTS_PCT = 55    # ...AND BTTS probability above this (both required — Over 2.5
@@ -225,12 +228,18 @@ def get_team_form(team_id, competition_id, season_id, key):
         "avg_conceded": round(sum(conceded) / n, 2),
         "goals_list": scored,
         "avg_shots": round(sum(shots) / len(shots), 1) if shots else None,
+        "shots_list": shots,
         "avg_shots_on_target": round(sum(shots_on_target) / len(shots_on_target), 1) if shots_on_target else None,
+        "sot_list": shots_on_target,
         "avg_corners": round(sum(corners) / len(corners), 1) if corners else None,
+        "corners_list": corners,
         "avg_saves": round(sum(saves) / len(saves), 1) if saves else None,
+        "saves_list": saves,
         "avg_fh_corners": round(sum(fh_corners) / len(fh_corners), 1) if fh_corners else None,
+        "fh_corners_list": fh_corners,
         "avg_tackles": round(sum(tackles) / len(tackles), 1) if tackles else None,
         "avg_cards": round(sum(cards) / len(cards), 1) if cards else None,
+        "cards_list": cards,
     }
     team_form_cache[cache_key] = form
     return form
@@ -238,7 +247,7 @@ def get_team_form(team_id, competition_id, season_id, key):
 
 def shrink(value, n, league_avg, prior=PRIOR_STRENGTH):
     """Same small-sample protection as every other tool in this set — a
-    1-2 game sample leans mostly on the league average; by 5 games the
+    1-2 game sample leans mostly on the league average; by RECENT_GAMES games the
     team's own form dominates."""
     if value is None:
         return league_avg
@@ -362,13 +371,13 @@ def predict_team_props(form):
             line = 0.5
         threshold = int(math.floor(line)) + 1
         prob = 1 - poisson_cdf(threshold - 1, avg)
-        return {"line": line, "prob": round(prob * 100)}
+        return {"line": line, "prob": round(prob * 100), "avg": avg}
 
     def at_least_one(avg):
         if avg is None:
             return None
         prob = 1 - poisson_pmf(0, avg)
-        return {"line": 0.5, "prob": round(prob * 100)}
+        return {"line": 0.5, "prob": round(prob * 100), "avg": avg}
 
     return {
         "shots_prop": prop(form.get("avg_shots")),
@@ -392,16 +401,40 @@ def build_legs(predictions):
     legs = []
     for p in predictions:
         match_label = f"{p['home_team']} v {p['away_team']}"
-        legs.append({"match": match_label, "market": "Over 2.5 Goals", "prob": p["over25"], "category": "Goals"})
-        legs.append({"match": match_label, "market": "BTTS", "prob": p["btts"], "category": "BTTS"})
-        legs.append({"match": match_label, "market": "FH Corners Over 3.5", "prob": p["fh_corners_over35"], "category": "FH Corners"})
+        hf, af = p["home_form"], p["away_form"]
+        h_n, a_n = hf["n_games"], af["n_games"]
 
-        for side, team_name, props in [
-            ("home", p["home_team"], p.get("home_props") or {}),
-            ("away", p["away_team"], p.get("away_props") or {}),
+        h_goals_hist = format_history(hf.get("goals_list"))
+        a_goals_hist = format_history(af.get("goals_list"))
+        legs.append({
+            "match": match_label, "market": "Over 2.5 Goals", "prob": p["over25"], "category": "Goals",
+            "detail": f"{p['exp_total']} exp goals ({h_n}v{a_n}gm)",
+            "history": f"H {h_goals_hist} · A {a_goals_hist}" if h_goals_hist and a_goals_hist else None,
+        })
+        legs.append({
+            "match": match_label, "market": "BTTS", "prob": p["btts"], "category": "BTTS",
+            "detail": f"{p['exp_total']} exp goals ({h_n}v{a_n}gm)",
+            "history": f"H {h_goals_hist} · A {a_goals_hist}" if h_goals_hist and a_goals_hist else None,
+        })
+
+        h_fh_hist = format_history(hf.get("fh_corners_list"))
+        a_fh_hist = format_history(af.get("fh_corners_list"))
+        legs.append({
+            "match": match_label, "market": "FH Corners Over 3.5", "prob": p["fh_corners_over35"], "category": "FH Corners",
+            "detail": f"{p['exp_fh_corners']} exp FH corners ({h_n}v{a_n}gm)",
+            "history": f"H {h_fh_hist} · A {a_fh_hist}" if h_fh_hist and a_fh_hist else None,
+        })
+
+        for team_name, form, props, n_games in [
+            (p["home_team"], hf, p.get("home_props") or {}, h_n),
+            (p["away_team"], af, p.get("away_props") or {}, a_n),
         ]:
-            for market_key, label in [("shots_prop", "Shots"), ("sot_prop", "Shots on Target"),
-                                        ("corners_prop", "Corners"), ("cards_prop", "Cards")]:
+            for market_key, list_key, label in [
+                ("shots_prop", "shots_list", "Shots"),
+                ("sot_prop", "sot_list", "Shots on Target"),
+                ("corners_prop", "corners_list", "Corners"),
+                ("cards_prop", "cards_list", "Cards"),
+            ]:
                 prop = props.get(market_key)
                 if prop:
                     legs.append({
@@ -409,6 +442,8 @@ def build_legs(predictions):
                         "market": f"{team_name} Over {prop['line']} {label}",
                         "prob": prop["prob"],
                         "category": label,
+                        "detail": f"avg {prop['avg']} ({n_games}gm)",
+                        "history": format_history(form.get(list_key)),
                     })
     return legs
 
@@ -614,7 +649,9 @@ function buildSafest() {{
 
   const rows = chosen.map(l =>
     `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #2a3038">
-       <span>${{l.match}}<br><span style="color:#7ec8ff">${{l.market}}</span> <span style="color:#555">· ${{l.category}}</span></span>
+       <span>${{l.match}}<br><span style="color:#7ec8ff">${{l.market}}</span> <span style="color:#555">· ${{l.category}}</span>
+       ${{l.detail ? `<br><span style="color:#666;font-size:10px">${{l.detail}}</span>` : ''}}
+       ${{l.history ? `<br><span style="color:#555;font-size:10px">last games: ${{l.history}}</span>` : ''}}</span>
        <span style="color:#ffeb3b;font-weight:bold">${{l.prob}}%</span>
      </div>`
   ).join('');
@@ -674,11 +711,39 @@ CARD_TEMPLATE = """<div style="background:#1a1f26;border-radius:12px;padding:16p
     <div>{home_team}: {h_goals} goals/gm · shots {h_shots} · SoT {h_sot} · corners {h_corners} (FH {h_fh_corners}) · tackles {h_tackles} · saves {h_saves} · cards {h_cards} ({h_n}gm)</div>
     <div style="margin-top:4px">{away_team}: {a_goals} goals/gm · shots {a_shots} · SoT {a_sot} · corners {a_corners} (FH {a_fh_corners}) · tackles {a_tackles} · saves {a_saves} · cards {a_cards} ({a_n}gm)</div>
   </div>
+  <div style="background:#0f1318;border-radius:8px;padding:8px;font-size:10px;color:#888;margin-top:6px;line-height:1.6">
+    <div><span style="color:#aaa">{home_team} last games</span> — {h_history}</div>
+    <div style="margin-top:3px"><span style="color:#aaa">{away_team} last games</span> — {a_history}</div>
+  </div>
 </div>"""
 
 
 def fmt(v):
     return v if v is not None else "—"
+
+
+def format_history(lst):
+    """Render a team's last-N-games list as an oldest→newest string, e.g.
+    [4, 5, 3] (stored newest-first) becomes "3/5/4" read left-to-right as
+    a trend. Used to show the actual match-by-match numbers behind an
+    average, not just the average itself."""
+    if not lst:
+        return None
+    return "/".join(str(v) for v in reversed(lst))
+
+
+def team_history_line(form):
+    """One compact line of last-N-games sequences per stat for a team,
+    used under the main prediction card. Skips any stat with no data
+    rather than showing an empty "goals —" entry."""
+    parts = []
+    for label, key in [("goals", "goals_list"), ("shots", "shots_list"),
+                        ("SoT", "sot_list"), ("corners", "corners_list"),
+                        ("cards", "cards_list")]:
+        hist = format_history(form.get(key))
+        if hist:
+            parts.append(f"{label} {hist}")
+    return " · ".join(parts) if parts else "—"
 
 
 def make_html(predictions, date_label=None, prev_href=None, next_href=None):
@@ -693,10 +758,12 @@ def make_html(predictions, date_label=None, prev_href=None, next_href=None):
         h_sot=fmt(p["home_form"]["avg_shots_on_target"]), h_corners=fmt(p["home_form"]["avg_corners"]),
         h_fh_corners=fmt(p["home_form"]["avg_fh_corners"]), h_tackles=fmt(p["home_form"]["avg_tackles"]),
         h_saves=fmt(p["home_form"]["avg_saves"]), h_cards=fmt(p["home_form"].get("avg_cards")), h_n=p["home_form"]["n_games"],
+        h_history=team_history_line(p["home_form"]),
         a_goals=p["away_form"]["avg_scored"], a_shots=fmt(p["away_form"]["avg_shots"]),
         a_sot=fmt(p["away_form"]["avg_shots_on_target"]), a_corners=fmt(p["away_form"]["avg_corners"]),
         a_fh_corners=fmt(p["away_form"]["avg_fh_corners"]), a_tackles=fmt(p["away_form"]["avg_tackles"]),
         a_saves=fmt(p["away_form"]["avg_saves"]), a_cards=fmt(p["away_form"].get("avg_cards")), a_n=p["away_form"]["n_games"],
+        a_history=team_history_line(p["away_form"]),
     ) for p in predictions)
     if not cards:
         cards = '<p style="text-align:center;color:#888">No fixtures on this date passed the filter.</p>'
