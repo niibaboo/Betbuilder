@@ -49,6 +49,11 @@ MIN_BTTS_PCT = 55    # ...AND BTTS probability above this (both required — Ove
 # /football/competitions search returns (verified at runtime, not guessed).
 LEAGUE_SEARCH_NAMES = [
     "Premier League",
+    "Championship",  # test addition — confirming TheStatsAPI's exact name match
+                      # and full stats coverage (shots/corners/cards) before
+                      # keeping it long-term; see find_competition()'s "couldn't
+                      # find" warning if this name doesn't match what the API
+                      # actually calls it
     "Bundesliga",
     "Eredivisie",
     "Primeira Liga",
