@@ -1,187 +1,5 @@
 [
   {
-    "league": "Eredivisie",
-    "date": "2026-09-15T18:00:00.000Z",
-    "date_key": "2026-09-15",
-    "home_team": "AFC Ajax",
-    "away_team": "Willem II Tilburg",
-    "home_form": {
-      "n_games": 5,
-      "avg_scored": 2.8,
-      "avg_conceded": 1.2,
-      "goals_list": [
-        5,
-        1,
-        4,
-        2,
-        2
-      ],
-      "avg_shots": 21.4,
-      "shots_list": [
-        27,
-        19,
-        12,
-        23,
-        26
-      ],
-      "avg_shots_on_target": 7.2,
-      "sot_list": [
-        11,
-        6,
-        9,
-        4,
-        6
-      ],
-      "avg_corners": 6.6,
-      "corners_list": [
-        11,
-        1,
-        4,
-        7,
-        10
-      ],
-      "avg_saves": 3.6,
-      "saves_list": [
-        3,
-        2,
-        5,
-        6,
-        2
-      ],
-      "avg_fh_corners": 3.2,
-      "fh_corners_list": [
-        6,
-        0,
-        3,
-        3,
-        4
-      ],
-      "avg_tackles": 14.2,
-      "avg_cards": 3.2,
-      "cards_list": [
-        5,
-        3,
-        3,
-        2
-      ]
-    },
-    "away_form": {
-      "n_games": 5,
-      "avg_scored": 1.0,
-      "avg_conceded": 2.8,
-      "goals_list": [
-        1,
-        0,
-        2,
-        1,
-        1
-      ],
-      "avg_shots": 11.6,
-      "shots_list": [
-        8,
-        16,
-        12,
-        9,
-        13
-      ],
-      "avg_shots_on_target": 2.4,
-      "sot_list": [
-        2,
-        2,
-        5,
-        2,
-        1
-      ],
-      "avg_corners": 4.2,
-      "corners_list": [
-        2,
-        7,
-        9,
-        1,
-        2
-      ],
-      "avg_saves": 4.4,
-      "saves_list": [
-        4,
-        3,
-        3,
-        6,
-        6
-      ],
-      "avg_fh_corners": 1.6,
-      "fh_corners_list": [
-        1,
-        2,
-        4,
-        0,
-        1
-      ],
-      "avg_tackles": 13.8,
-      "avg_cards": 1.2,
-      "cards_list": [
-        1,
-        2,
-        1,
-        1
-      ]
-    },
-    "home_props": {
-      "shots_prop": {
-        "line": 15.0,
-        "prob": 90,
-        "avg": 21.4
-      },
-      "sot_prop": {
-        "line": 5.0,
-        "prob": 72,
-        "avg": 7.2
-      },
-      "corners_prop": {
-        "line": 4.5,
-        "prob": 79,
-        "avg": 6.6
-      },
-      "cards_prop": {
-        "line": 0.5,
-        "prob": 96,
-        "avg": 3.2
-      }
-    },
-    "away_props": {
-      "shots_prop": {
-        "line": 8.0,
-        "prob": 82,
-        "avg": 11.6
-      },
-      "sot_prop": {
-        "line": 1.5,
-        "prob": 69,
-        "avg": 2.4
-      },
-      "corners_prop": {
-        "line": 3.0,
-        "prob": 60,
-        "avg": 4.2
-      },
-      "cards_prop": {
-        "line": 0.5,
-        "prob": 70,
-        "avg": 1.2
-      }
-    },
-    "exp_home": 3.15,
-    "exp_away": 1.03,
-    "exp_total": 4.18,
-    "over25": 79,
-    "btts": 62,
-    "exp_fh_corners": 4.8,
-    "fh_corners_over35": 71,
-    "fh_corners_over45": 52,
-    "home_win_pct": 78,
-    "draw_pct": 12,
-    "away_win_pct": 9
-  },
-  {
     "league": "Bundesliga",
     "date": "2026-09-18T18:30:00.000Z",
     "date_key": "2026-09-18",
@@ -330,9 +148,9 @@
     "exp_total": 4.01,
     "over25": 76,
     "btts": 63,
-    "exp_fh_corners": 4.44,
-    "fh_corners_over35": 65,
-    "fh_corners_over45": 46,
+    "exp_fh_corners": 4.38,
+    "fh_corners_over35": 64,
+    "fh_corners_over45": 44,
     "home_win_pct": 74,
     "draw_pct": 14,
     "away_win_pct": 11
@@ -704,6 +522,211 @@
     "away_win_pct": 31
   },
   {
+    "league": "Championship",
+    "date": "2026-09-19T11:30:00.000Z",
+    "date_key": "2026-09-19",
+    "home_team": "Millwall",
+    "away_team": "West Ham United",
+    "home_form": {
+      "n_games": 6,
+      "avg_scored": 1.83,
+      "avg_conceded": 1.83,
+      "goals_list": [
+        1,
+        4,
+        0,
+        1,
+        3,
+        2
+      ],
+      "avg_shots": 15.0,
+      "shots_list": [
+        16,
+        12,
+        4,
+        15,
+        19,
+        24
+      ],
+      "avg_shots_on_target": 3.7,
+      "sot_list": [
+        2,
+        5,
+        0,
+        5,
+        7,
+        3
+      ],
+      "avg_corners": 5.2,
+      "corners_list": [
+        2,
+        3,
+        1,
+        11,
+        8,
+        6
+      ],
+      "avg_saves": 1.7,
+      "saves_list": [
+        1,
+        4,
+        1,
+        2,
+        2,
+        0
+      ],
+      "avg_fh_corners": 2.3,
+      "fh_corners_list": [
+        0,
+        2,
+        1,
+        4,
+        5,
+        2
+      ],
+      "avg_tackles": 14.3,
+      "avg_cards": 1.7,
+      "cards_list": [
+        3,
+        1,
+        2,
+        1,
+        1,
+        2
+      ]
+    },
+    "away_form": {
+      "n_games": 7,
+      "avg_scored": 2.86,
+      "avg_conceded": 1.29,
+      "goals_list": [
+        6,
+        3,
+        3,
+        4,
+        1,
+        1,
+        2
+      ],
+      "avg_shots": 15.9,
+      "shots_list": [
+        19,
+        11,
+        20,
+        12,
+        13,
+        25,
+        11
+      ],
+      "avg_shots_on_target": 5.9,
+      "sot_list": [
+        9,
+        7,
+        7,
+        6,
+        1,
+        9,
+        2
+      ],
+      "avg_corners": 6.0,
+      "corners_list": [
+        3,
+        4,
+        5,
+        6,
+        11,
+        7,
+        6
+      ],
+      "avg_saves": 2.3,
+      "saves_list": [
+        0,
+        4,
+        0,
+        2,
+        4,
+        3,
+        3
+      ],
+      "avg_fh_corners": 2.4,
+      "fh_corners_list": [
+        2,
+        2,
+        1,
+        3,
+        4,
+        1,
+        4
+      ],
+      "avg_tackles": 14.9,
+      "avg_cards": 1.9,
+      "cards_list": [
+        1,
+        3,
+        0,
+        2,
+        1,
+        2,
+        4
+      ]
+    },
+    "home_props": {
+      "shots_prop": {
+        "line": 10.5,
+        "prob": 88,
+        "avg": 15.0
+      },
+      "sot_prop": {
+        "line": 2.5,
+        "prob": 71,
+        "avg": 3.7
+      },
+      "corners_prop": {
+        "line": 3.5,
+        "prob": 76,
+        "avg": 5.2
+      },
+      "cards_prop": {
+        "line": 0.5,
+        "prob": 82,
+        "avg": 1.7
+      }
+    },
+    "away_props": {
+      "shots_prop": {
+        "line": 11.0,
+        "prob": 87,
+        "avg": 15.9
+      },
+      "sot_prop": {
+        "line": 4.0,
+        "prob": 70,
+        "avg": 5.9
+      },
+      "corners_prop": {
+        "line": 4.0,
+        "prob": 71,
+        "avg": 6.0
+      },
+      "cards_prop": {
+        "line": 0.5,
+        "prob": 85,
+        "avg": 1.9
+      }
+    },
+    "exp_home": 1.58,
+    "exp_away": 2.88,
+    "exp_total": 4.46,
+    "over25": 82,
+    "btts": 75,
+    "exp_fh_corners": 4.67,
+    "fh_corners_over35": 69,
+    "fh_corners_over45": 50,
+    "home_win_pct": 19,
+    "draw_pct": 16,
+    "away_win_pct": 64
+  },
+  {
     "league": "Bundesliga",
     "date": "2026-09-19T13:30:00.000Z",
     "date_key": "2026-09-19",
@@ -852,12 +875,208 @@
     "exp_total": 4.39,
     "over25": 81,
     "btts": 68,
-    "exp_fh_corners": 5.61,
-    "fh_corners_over35": 81,
-    "fh_corners_over45": 66,
+    "exp_fh_corners": 5.55,
+    "fh_corners_over35": 80,
+    "fh_corners_over45": 65,
     "home_win_pct": 12,
     "draw_pct": 14,
     "away_win_pct": 74
+  },
+  {
+    "league": "Eredivisie",
+    "date": "2026-09-19T19:00:00.000Z",
+    "date_key": "2026-09-19",
+    "home_team": "Willem II Tilburg",
+    "away_team": "Fortuna Sittard",
+    "home_form": {
+      "n_games": 6,
+      "avg_scored": 1.0,
+      "avg_conceded": 3.17,
+      "goals_list": [
+        1,
+        1,
+        0,
+        2,
+        1,
+        1
+      ],
+      "avg_shots": 11.3,
+      "shots_list": [
+        10,
+        8,
+        16,
+        12,
+        9,
+        13
+      ],
+      "avg_shots_on_target": 2.7,
+      "sot_list": [
+        4,
+        2,
+        2,
+        5,
+        2,
+        1
+      ],
+      "avg_corners": 3.8,
+      "corners_list": [
+        2,
+        2,
+        7,
+        9,
+        1,
+        2
+      ],
+      "avg_saves": 5.0,
+      "saves_list": [
+        8,
+        4,
+        3,
+        3,
+        6,
+        6
+      ],
+      "avg_fh_corners": 1.5,
+      "fh_corners_list": [
+        1,
+        1,
+        2,
+        4,
+        0,
+        1
+      ],
+      "avg_tackles": 13.5,
+      "avg_cards": 1.2,
+      "cards_list": [
+        1,
+        2,
+        1,
+        1
+      ]
+    },
+    "away_form": {
+      "n_games": 6,
+      "avg_scored": 2.0,
+      "avg_conceded": 2.33,
+      "goals_list": [
+        1,
+        3,
+        3,
+        0,
+        3,
+        2
+      ],
+      "avg_shots": 9.0,
+      "shots_list": [
+        8,
+        8,
+        9,
+        4,
+        17,
+        8
+      ],
+      "avg_shots_on_target": 4.8,
+      "sot_list": [
+        4,
+        5,
+        5,
+        2,
+        7,
+        6
+      ],
+      "avg_corners": 2.0,
+      "corners_list": [
+        3,
+        0,
+        2,
+        1,
+        6,
+        0
+      ],
+      "avg_saves": 4.5,
+      "saves_list": [
+        6,
+        1,
+        1,
+        9,
+        6,
+        4
+      ],
+      "avg_fh_corners": 0.5,
+      "fh_corners_list": [
+        1,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "avg_tackles": 11.3,
+      "avg_cards": 1.8,
+      "cards_list": [
+        1,
+        4,
+        4,
+        1,
+        0,
+        1
+      ]
+    },
+    "home_props": {
+      "shots_prop": {
+        "line": 8.0,
+        "prob": 79,
+        "avg": 11.3
+      },
+      "sot_prop": {
+        "line": 1.5,
+        "prob": 75,
+        "avg": 2.7
+      },
+      "corners_prop": {
+        "line": 2.5,
+        "prob": 73,
+        "avg": 3.8
+      },
+      "cards_prop": {
+        "line": 0.5,
+        "prob": 70,
+        "avg": 1.2
+      }
+    },
+    "away_props": {
+      "shots_prop": {
+        "line": 6.0,
+        "prob": 79,
+        "avg": 9.0
+      },
+      "sot_prop": {
+        "line": 3.0,
+        "prob": 71,
+        "avg": 4.8
+      },
+      "corners_prop": {
+        "line": 1.0,
+        "prob": 59,
+        "avg": 2.0
+      },
+      "cards_prop": {
+        "line": 0.5,
+        "prob": 83,
+        "avg": 1.8
+      }
+    },
+    "exp_home": 1.49,
+    "exp_away": 2.8,
+    "exp_total": 4.28,
+    "over25": 80,
+    "btts": 73,
+    "exp_fh_corners": 2.93,
+    "fh_corners_over35": 34,
+    "fh_corners_over45": 17,
+    "home_win_pct": 18,
+    "draw_pct": 17,
+    "away_win_pct": 65
   },
   {
     "league": "Bundesliga",
@@ -1008,9 +1227,9 @@
     "exp_total": 4.12,
     "over25": 78,
     "btts": 64,
-    "exp_fh_corners": 4.92,
+    "exp_fh_corners": 4.88,
     "fh_corners_over35": 72,
-    "fh_corners_over45": 55,
+    "fh_corners_over45": 54,
     "home_win_pct": 11,
     "draw_pct": 14,
     "away_win_pct": 75
@@ -1164,202 +1383,12 @@
     "exp_total": 4.07,
     "over25": 77,
     "btts": 69,
-    "exp_fh_corners": 4.63,
-    "fh_corners_over35": 68,
-    "fh_corners_over45": 49,
+    "exp_fh_corners": 4.55,
+    "fh_corners_over35": 67,
+    "fh_corners_over45": 48,
     "home_win_pct": 16,
     "draw_pct": 16,
     "away_win_pct": 67
-  },
-  {
-    "league": "Eredivisie",
-    "date": "2026-09-19T19:00:00.000Z",
-    "date_key": "2026-09-19",
-    "home_team": "Willem II Tilburg",
-    "away_team": "Fortuna Sittard",
-    "home_form": {
-      "n_games": 5,
-      "avg_scored": 1.0,
-      "avg_conceded": 2.8,
-      "goals_list": [
-        1,
-        0,
-        2,
-        1,
-        1
-      ],
-      "avg_shots": 11.6,
-      "shots_list": [
-        8,
-        16,
-        12,
-        9,
-        13
-      ],
-      "avg_shots_on_target": 2.4,
-      "sot_list": [
-        2,
-        2,
-        5,
-        2,
-        1
-      ],
-      "avg_corners": 4.2,
-      "corners_list": [
-        2,
-        7,
-        9,
-        1,
-        2
-      ],
-      "avg_saves": 4.4,
-      "saves_list": [
-        4,
-        3,
-        3,
-        6,
-        6
-      ],
-      "avg_fh_corners": 1.6,
-      "fh_corners_list": [
-        1,
-        2,
-        4,
-        0,
-        1
-      ],
-      "avg_tackles": 13.8,
-      "avg_cards": 1.2,
-      "cards_list": [
-        1,
-        2,
-        1,
-        1
-      ]
-    },
-    "away_form": {
-      "n_games": 6,
-      "avg_scored": 2.0,
-      "avg_conceded": 2.33,
-      "goals_list": [
-        1,
-        3,
-        3,
-        0,
-        3,
-        2
-      ],
-      "avg_shots": 9.0,
-      "shots_list": [
-        8,
-        8,
-        9,
-        4,
-        17,
-        8
-      ],
-      "avg_shots_on_target": 4.8,
-      "sot_list": [
-        4,
-        5,
-        5,
-        2,
-        7,
-        6
-      ],
-      "avg_corners": 2.0,
-      "corners_list": [
-        3,
-        0,
-        2,
-        1,
-        6,
-        0
-      ],
-      "avg_saves": 4.5,
-      "saves_list": [
-        6,
-        1,
-        1,
-        9,
-        6,
-        4
-      ],
-      "avg_fh_corners": 0.5,
-      "fh_corners_list": [
-        1,
-        0,
-        0,
-        0,
-        2,
-        0
-      ],
-      "avg_tackles": 11.3,
-      "avg_cards": 1.8,
-      "cards_list": [
-        1,
-        4,
-        4,
-        1,
-        0,
-        1
-      ]
-    },
-    "home_props": {
-      "shots_prop": {
-        "line": 8.0,
-        "prob": 82,
-        "avg": 11.6
-      },
-      "sot_prop": {
-        "line": 1.5,
-        "prob": 69,
-        "avg": 2.4
-      },
-      "corners_prop": {
-        "line": 3.0,
-        "prob": 60,
-        "avg": 4.2
-      },
-      "cards_prop": {
-        "line": 0.5,
-        "prob": 70,
-        "avg": 1.2
-      }
-    },
-    "away_props": {
-      "shots_prop": {
-        "line": 6.0,
-        "prob": 79,
-        "avg": 9.0
-      },
-      "sot_prop": {
-        "line": 3.0,
-        "prob": 71,
-        "avg": 4.8
-      },
-      "corners_prop": {
-        "line": 1.0,
-        "prob": 59,
-        "avg": 2.0
-      },
-      "cards_prop": {
-        "line": 0.5,
-        "prob": 83,
-        "avg": 1.8
-      }
-    },
-    "exp_home": 1.53,
-    "exp_away": 2.51,
-    "exp_total": 4.04,
-    "over25": 77,
-    "btts": 72,
-    "exp_fh_corners": 3.07,
-    "fh_corners_over35": 37,
-    "fh_corners_over45": 20,
-    "home_win_pct": 22,
-    "draw_pct": 19,
-    "away_win_pct": 59
   },
   {
     "league": "Bundesliga",
@@ -1510,9 +1539,9 @@
     "exp_total": 3.87,
     "over25": 74,
     "btts": 68,
-    "exp_fh_corners": 4.07,
-    "fh_corners_over35": 58,
-    "fh_corners_over45": 38,
+    "exp_fh_corners": 4.01,
+    "fh_corners_over35": 57,
+    "fh_corners_over45": 37,
     "home_win_pct": 19,
     "draw_pct": 18,
     "away_win_pct": 62
@@ -1603,38 +1632,34 @@
         1,
         0
       ],
-      "avg_shots": 12.5,
+      "avg_shots": 13.0,
       "shots_list": [
         16,
         8,
-        10,
         11,
         19,
         11
       ],
-      "avg_shots_on_target": 4.3,
+      "avg_shots_on_target": 4.6,
       "sot_list": [
         7,
-        3,
         3,
         4,
         7,
         2
       ],
-      "avg_corners": 3.8,
+      "avg_corners": 4.2,
       "corners_list": [
         4,
-        2,
         2,
         3,
         7,
         5
       ],
-      "avg_saves": 3.2,
+      "avg_saves": 2.6,
       "saves_list": [
         1,
         0,
-        6,
         3,
         4,
         5
@@ -1645,15 +1670,13 @@
         1,
         1,
         1,
-        1,
         1
       ],
-      "avg_tackles": 17.3,
-      "avg_cards": 1.8,
+      "avg_tackles": 16.8,
+      "avg_cards": 2.0,
       "cards_list": [
         2,
         4,
-        1,
         0,
         2
       ]
@@ -1683,23 +1706,23 @@
     "away_props": {
       "shots_prop": {
         "line": 9.0,
-        "prob": 80,
-        "avg": 12.5
+        "prob": 83,
+        "avg": 13.0
       },
       "sot_prop": {
         "line": 3.0,
-        "prob": 62,
-        "avg": 4.3
+        "prob": 67,
+        "avg": 4.6
       },
       "corners_prop": {
-        "line": 2.5,
-        "prob": 73,
-        "avg": 3.8
+        "line": 3.0,
+        "prob": 60,
+        "avg": 4.2
       },
       "cards_prop": {
         "line": 0.5,
-        "prob": 83,
-        "avg": 1.8
+        "prob": 86,
+        "avg": 2.0
       }
     },
     "exp_home": 1.79,
@@ -1707,8 +1730,8 @@
     "exp_total": 3.84,
     "over25": 74,
     "btts": 73,
-    "exp_fh_corners": 3.76,
-    "fh_corners_over35": 52,
+    "exp_fh_corners": 3.72,
+    "fh_corners_over35": 51,
     "fh_corners_over45": 32,
     "home_win_pct": 34,
     "draw_pct": 21,
@@ -1863,9 +1886,9 @@
     "exp_total": 3.83,
     "over25": 74,
     "btts": 61,
-    "exp_fh_corners": 4.77,
-    "fh_corners_over35": 70,
-    "fh_corners_over45": 52,
+    "exp_fh_corners": 4.71,
+    "fh_corners_over35": 69,
+    "fh_corners_over45": 51,
     "home_win_pct": 12,
     "draw_pct": 15,
     "away_win_pct": 73
@@ -1877,57 +1900,63 @@
     "home_team": "AFC Ajax",
     "away_team": "Excelsior",
     "home_form": {
-      "n_games": 5,
-      "avg_scored": 2.8,
-      "avg_conceded": 1.2,
+      "n_games": 6,
+      "avg_scored": 3.17,
+      "avg_conceded": 1.17,
       "goals_list": [
+        5,
         5,
         1,
         4,
         2,
         2
       ],
-      "avg_shots": 21.4,
+      "avg_shots": 23.3,
       "shots_list": [
+        33,
         27,
         19,
         12,
         23,
         26
       ],
-      "avg_shots_on_target": 7.2,
+      "avg_shots_on_target": 8.2,
       "sot_list": [
+        13,
         11,
         6,
         9,
         4,
         6
       ],
-      "avg_corners": 6.6,
+      "avg_corners": 7.8,
       "corners_list": [
+        14,
         11,
         1,
         4,
         7,
         10
       ],
-      "avg_saves": 3.6,
+      "avg_saves": 3.5,
       "saves_list": [
+        3,
         3,
         2,
         5,
         6,
         2
       ],
-      "avg_fh_corners": 3.2,
+      "avg_fh_corners": 3.7,
       "fh_corners_list": [
+        6,
         6,
         0,
         3,
         3,
         4
       ],
-      "avg_tackles": 14.2,
+      "avg_tackles": 13.8,
       "avg_cards": 3.2,
       "cards_list": [
         5,
@@ -2005,19 +2034,19 @@
     },
     "home_props": {
       "shots_prop": {
-        "line": 15.0,
-        "prob": 90,
-        "avg": 21.4
+        "line": 16.5,
+        "prob": 93,
+        "avg": 23.3
       },
       "sot_prop": {
-        "line": 5.0,
-        "prob": 72,
-        "avg": 7.2
+        "line": 5.5,
+        "prob": 83,
+        "avg": 8.2
       },
       "corners_prop": {
-        "line": 4.5,
+        "line": 5.5,
         "prob": 79,
-        "avg": 6.6
+        "avg": 7.8
       },
       "cards_prop": {
         "line": 0.5,
@@ -2047,17 +2076,17 @@
         "avg": 1.8
       }
     },
-    "exp_home": 1.82,
-    "exp_away": 1.59,
-    "exp_total": 3.41,
-    "over25": 66,
-    "btts": 67,
-    "exp_fh_corners": 5.07,
-    "fh_corners_over35": 74,
-    "fh_corners_over45": 57,
-    "home_win_pct": 44,
-    "draw_pct": 22,
-    "away_win_pct": 34
+    "exp_home": 2.02,
+    "exp_away": 1.54,
+    "exp_total": 3.56,
+    "over25": 69,
+    "btts": 68,
+    "exp_fh_corners": 5.41,
+    "fh_corners_over35": 79,
+    "fh_corners_over45": 63,
+    "home_win_pct": 49,
+    "draw_pct": 21,
+    "away_win_pct": 30
   },
   {
     "league": "Eredivisie",
@@ -2247,9 +2276,9 @@
     "exp_total": 5.42,
     "over25": 91,
     "btts": 73,
-    "exp_fh_corners": 5.34,
-    "fh_corners_over35": 78,
-    "fh_corners_over45": 62,
+    "exp_fh_corners": 5.3,
+    "fh_corners_over35": 77,
+    "fh_corners_over45": 61,
     "home_win_pct": 81,
     "draw_pct": 9,
     "away_win_pct": 8
@@ -2655,9 +2684,9 @@
     "exp_total": 4.36,
     "over25": 81,
     "btts": 78,
-    "exp_fh_corners": 4.08,
-    "fh_corners_over35": 58,
-    "fh_corners_over45": 39,
+    "exp_fh_corners": 4.04,
+    "fh_corners_over35": 57,
+    "fh_corners_over45": 38,
     "home_win_pct": 34,
     "draw_pct": 20,
     "away_win_pct": 46
@@ -3023,9 +3052,9 @@
     "exp_total": 4.04,
     "over25": 77,
     "btts": 74,
-    "exp_fh_corners": 6.0,
-    "fh_corners_over35": 85,
-    "fh_corners_over45": 71,
+    "exp_fh_corners": 5.9,
+    "fh_corners_over35": 84,
+    "fh_corners_over45": 70,
     "home_win_pct": 29,
     "draw_pct": 20,
     "away_win_pct": 51
@@ -3447,7 +3476,7 @@
     "exp_total": 3.76,
     "over25": 72,
     "btts": 72,
-    "exp_fh_corners": 3.94,
+    "exp_fh_corners": 3.92,
     "fh_corners_over35": 55,
     "fh_corners_over45": 36,
     "home_win_pct": 34,
@@ -3603,9 +3632,9 @@
     "exp_total": 3.56,
     "over25": 69,
     "btts": 69,
-    "exp_fh_corners": 5.12,
-    "fh_corners_over35": 75,
-    "fh_corners_over45": 58,
+    "exp_fh_corners": 5.06,
+    "fh_corners_over35": 74,
+    "fh_corners_over45": 57,
     "home_win_pct": 32,
     "draw_pct": 22,
     "away_win_pct": 46
